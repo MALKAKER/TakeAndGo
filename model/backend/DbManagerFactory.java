@@ -1,7 +1,5 @@
 package com.javaproject.malki.takeandgo.model.backend;
 
-import com.javaproject.malki.takeandgo.model.DataSource.ListDbManager;
-import com.javaproject.malki.takeandgo.model.DataSource.List_DB;
 import com.javaproject.malki.takeandgo.model.DataSource.MySQL_DBManager;
 
 

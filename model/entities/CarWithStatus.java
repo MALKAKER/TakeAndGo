@@ -6,7 +6,8 @@ package com.javaproject.malki.takeandgo.model.entities;
  */
 
 public class CarWithStatus extends Car {
-    private Boolean carStatus = false;
+    //the car is available (true) by default
+    private Boolean carStatus = true;
 
     public Boolean getCarStatus() {
         return carStatus;

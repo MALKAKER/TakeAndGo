@@ -1,12 +1,14 @@
 package com.javaproject.malki.takeandgo.model.DataSource;
 
 import android.content.ContentValues;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
 import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DB_Manager;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
+import com.javaproject.malki.takeandgo.model.entities.CarWithStatus;
 import com.javaproject.malki.takeandgo.model.entities.Client;
 import com.javaproject.malki.takeandgo.model.entities.ENUMS;
 import com.javaproject.malki.takeandgo.model.entities.Order;
@@ -16,6 +18,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Dictionary;
 import java.util.List;
 
 import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToBranch;
@@ -31,7 +35,7 @@ public class MySQL_DBManager implements DB_Manager{
 
 
     private final String UserName="maker";
-    private final String WEB_URL = "http://"+UserName+".vlab.jct.ac.il/Car2Go";
+    private final String WEB_URL = "http://"+UserName+".vlab.jct.ac.il/Car2Go/secondApp";
 
 
     private boolean updateFlag = false;
@@ -153,7 +157,7 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
     @Override
-    public Car GetCar(String ID) throws Exception {
+    public CarWithStatus GetCar(String ID) throws Exception {
         ContentValues values = new ContentValues();
         //prepare query
         values.put(ConstCars.CarConst.LICENCE_NUMBER, ID);
@@ -167,7 +171,7 @@ public class MySQL_DBManager implements DB_Manager{
             JSONObject jsonObject = array.getJSONObject(0);
             //convert json format to contentValues
             ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
-            Car car = ConstCars.ContentValuesToCar(contentValues);
+            CarWithStatus car = ConstCars.ContentValuesToCarWithStatus(contentValues);
             return car;
         }
         throw new Exception("ERROR: The order doesn't exist!\n");
@@ -270,6 +274,7 @@ public class MySQL_DBManager implements DB_Manager{
         return fuelLevel[index];
     }
 
+
     @Override
     public List<Client> GetClients() {
         List<Client> result = new ArrayList<Client>();
@@ -366,4 +371,184 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 
+    @Override
+    public boolean UpdateMileage(float kilometers, String licencePlate) {
+        boolean success = true;
+        try {
+            //create query that update the car's mileage
+            ContentValues query = new ContentValues();
+            query.put("mileage", kilometers);
+            query.put(ConstCars.CarConst.LICENCE_NUMBER, licencePlate);
+            //post query
+            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
+            success = Boolean.valueOf(str);
+            return success;
+        } catch (Exception e) {
+            success= false;
+        }
+        return  success;
+    }
+
+    @Override
+    public List<Car> AvailableCars() {
+        List<Car> result = new ArrayList<Car>();
+
+        try {
+
+            String str = PHPtools.GET(WEB_URL + "/AvailableCars.php");
+            JSONArray array = new JSONObject(str).getJSONArray("availableCars");
+
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                Car car = ConstCars.ContentValuesToCar(contentValues);
+                result.add(car);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Car> AvailableCars(String location) {
+        List<Car> result = new ArrayList<Car>();
+
+        try {
+            ContentValues query = new ContentValues();
+            query.put(ConstCars.CarConst.LOCATION_NUMBER, location);
+            String str = PHPtools.POST(WEB_URL + "/AvailableCars.php", query);
+            JSONArray array = new JSONObject(str).getJSONArray("availableCars");
+
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                Car car = ConstCars.ContentValuesToCar(contentValues);
+                result.add(car);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Car> AvailableCars(int radius) {
+        List<Car> result = new ArrayList<Car>();
+
+        try {
+            ContentValues query = new ContentValues();
+            query.put("radius", radius);
+            String str = PHPtools.POST(WEB_URL + "/getDistance.php", query);
+            JSONArray array = new JSONObject(str).getJSONArray("cars");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                Car car = ConstCars.ContentValuesToCar(contentValues);
+                result.add(car);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Branch> IsModelInBranches(String model) {
+        //todo bonus
+        return null;
+    }
+
+    @Override
+    public Dictionary<String, List<Branch>> ModelInBranches() {
+        //todo bonus
+        return null;
+    }
+
+    @Override
+    public List<Order> GetOpenOrders() {
+        List<Order> result = new ArrayList<Order>();
+
+        try {
+
+            String str = PHPtools.GET(WEB_URL + "/GetOpenOrders.php");
+            JSONArray array = new JSONObject(str).getJSONArray("orders");
+
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+
+                ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                Order order = ConstCars.ContentValuesToOrder(contentValues);
+                result.add(order);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean CloseOrder(float kilometers, int orderNumber) {
+        boolean success = true;
+        try {
+            Date date = new Date();
+            //create query that update the order
+            ContentValues query = new ContentValues();
+            query.put("kilometers", kilometers);
+            query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
+            query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            //post query
+            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
+            success = Boolean.valueOf(str);
+            return success;
+        } catch (Exception e) {
+            success= false;
+        }
+        return  success;
+    }
+
+    @Override
+    public boolean CloseOrder(float kilometers, int orderNumber, Boolean isFuel, Float fuelVol) {
+        boolean success = true;
+        try {
+            Date date = new Date();
+            //create query that update the order
+            ContentValues query = new ContentValues();
+            query.put("kilometers", kilometers);
+            query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
+            query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            if(isFuel)
+            {
+                query.put(ConstCars.OrderConst.IS_FUEL, isFuel.toString());
+                query.put(ConstCars.OrderConst.FUEL_VOL, fuelVol.toString());
+            }
+            else
+            {
+                return CloseOrder(kilometers, orderNumber);
+            }
+            //post query
+            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
+            success = Boolean.valueOf(str);
+            return success;
+        } catch (Exception e) {
+            success= false;
+        }
+        return  success;
+    }
+
+    @Override
+    public boolean isClosedOrder() {
+        //todo, dont know what to do here
+        return false;
+    }
 }
