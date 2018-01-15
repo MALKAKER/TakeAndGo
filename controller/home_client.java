@@ -1,8 +1,13 @@
 package com.javaproject.malki.takeandgo.controller;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +17,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.javaproject.malki.takeandgo.R;
+import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
+import com.javaproject.malki.takeandgo.model.entities.Client;
 
 public class home_client extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+//    final Dialog dialog = new Dialog(this); // Context, this, etc.
+    private EditText enterUser;
+    private EditText enterPassword;
+    private Button register;
+    private Button signIn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +59,7 @@ public class home_client extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        openDialog();
     }
 
     @Override
@@ -76,6 +94,7 @@ public class home_client extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -99,5 +118,137 @@ public class home_client extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void CheckPassword(final String name, final String password1, final Dialog dialog) throws Exception {
+        new AsyncTask<Void, Void, Boolean>()
+        {
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                if(aBoolean)
+                {
+                    try {
+                        Toast.makeText(getApplicationContext(),getString(R.string.welcome) ,Toast.LENGTH_LONG).show();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    //if the user name and the password are correct, the dialog is closed
+                    dialog.dismiss();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Not a user", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                //wait to the debugger
+                if(android.os.Debug.isDebuggerConnected())
+                    android.os.Debug.waitForDebugger();
+                Client c = null;
+                try {
+                    //get client name
+                    c = DbManagerFactory.getManager().GetClient(name);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //If the input password is not correct
+                if(c == null || !c.getPassword().equals(password1))
+                    return false;
+                return true;
+            } }.execute();
+
+    }
+    private void RegisterActivity()
+    {
+        Intent intent = new Intent(this.getBaseContext(),Register.class);
+        startActivity(intent);
+    }
+    private void SignInActivity(Dialog d)
+    {
+        try
+        {
+            //Toast.makeText(this, "blah", Toast.LENGTH_SHORT).show();
+            String user = this.enterUser.getText().toString();
+            String pass = this.enterPassword.getText().toString();
+            //checks if the editText is full
+            if (!CheckNoInput(user, pass))
+            {
+
+            }
+            //check if the password is correct
+            else
+            {
+                CheckPassword(user, pass, d);
+            }
+
+        }
+        catch (Exception e)
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG );
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
+        }
+
+    }
+
+    private Boolean CheckNoInput(String user, String pass) {
+        if(user.trim().equals(""))
+        {
+            Toast toast = Toast.makeText(getApplicationContext(),R.string.Enter_user_name, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
+            return false;
+        }
+        else if (pass.equals(""))
+        {
+            Toast toast = Toast.makeText(getApplicationContext(),R.string.Enter_password_error, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
+            return  false;
+        }
+        return true;
+    }
+    /*
+    * opens login dialog
+    * */
+    public void openDialog() {
+        final Dialog dialog = new Dialog(this);
+
+        //define dialog to ignore backButton
+        dialog.setCancelable(false);
+
+        //initiate dialog layout
+        dialog.setContentView(R.layout.login_register_dialog);
+
+        //the dialog's title
+        dialog.setTitle(R.string.Welcome_to_Take_And_Go);
+
+        register = (Button)dialog.findViewById( R.id.register );
+        signIn = (Button)dialog.findViewById( R.id.signIn );
+        enterUser = (EditText)dialog.findViewById( R.id.enterUser );
+        enterPassword = (EditText)dialog.findViewById( R.id.enterPassword );
+
+        //register button
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RegisterActivity();
+            }
+        });
+        //sign in button
+        signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInActivity(dialog);
+            }
+        });
+
+        dialog.show();
     }
 }
