@@ -60,8 +60,8 @@ public class MySQL_DBManager implements DB_Manager{
         try {
             ContentValues values = new ContentValues();
             values.put(ConstCars.ClientConst.CLIENT_ID, ID);
-            String result = PHPtools.POST(WEB_URL + "/Client_Exist.php", values);
-            exist = Boolean.parseBoolean(result);
+            String result = PHPtools.POST(WEB_URL + "/User_Exist.php", values);
+            exist = Boolean.parseBoolean(result.replace(" ",""));
 
         }catch (Exception e)
         {}

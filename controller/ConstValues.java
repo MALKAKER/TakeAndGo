@@ -7,4 +7,9 @@ package com.javaproject.malki.takeandgo.controller;
 
 public class ConstValues {
     final static String USER_ID_KEY = "main.user.name";
+    //shared preference
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String User = "userKey";
+    public static final String Password = "passwordKey";
+    public static final String SavePref = "save";
 }

@@ -3,8 +3,10 @@ package com.javaproject.malki.takeandgo.controller;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
@@ -120,6 +122,50 @@ public class home_client extends AppCompatActivity
         return true;
     }
 
+    /*clear shared preference*/
+    private void clearSharedPreferences()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        enterUser.setText("");
+        enterPassword.setText("");
+        //Toast.makeText(this, "clear Preferences", Toast.LENGTH_SHORT).show();
+    }
+
+    /*load shared preference*/
+    private void loadSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        if (sharedPreferences.contains(ConstValues.User))
+        {
+            Toast.makeText(getApplicationContext(),sharedPreferences.getString(ConstValues.User, null),Toast.LENGTH_LONG).show();
+            this.enterUser.setText( sharedPreferences.getString(ConstValues.User, null));
+            Toast.makeText(this, "load name", Toast.LENGTH_SHORT).show();
+        }
+        if (sharedPreferences.contains(ConstValues.Password))
+        {
+            enterPassword.setText(sharedPreferences.getString(ConstValues.Password, null));
+            //Toast.makeText(this, "load age", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /* save shared preference*/
+    private void saveSharedPreferences()
+    {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            String name = enterUser.getText().toString();
+            String pass = enterPassword.getText().toString();
+            editor.putString(ConstValues.User, name);
+            editor.putString(ConstValues.Password, pass);
+            editor.commit();
+        } catch (Exception ex)
+        {
+//            Toast.makeText(this, "failed to save Preferences", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void CheckPassword(final String name, final String password1, final Dialog dialog) throws Exception {
         new AsyncTask<Void, Void, Boolean>()
         {
@@ -229,6 +275,8 @@ public class home_client extends AppCompatActivity
         //the dialog's title
         dialog.setTitle(R.string.Welcome_to_Take_And_Go);
 
+        //shared preference
+        loadSharedPreferences();
         register = (Button)dialog.findViewById( R.id.register );
         signIn = (Button)dialog.findViewById( R.id.signIn );
         enterUser = (EditText)dialog.findViewById( R.id.enterUser );
