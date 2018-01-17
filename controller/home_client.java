@@ -2,6 +2,8 @@ package com.javaproject.malki.takeandgo.controller;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,6 +38,9 @@ public class home_client extends AppCompatActivity
     private EditText enterPassword;
     private Button register;
     private Button signIn;
+    private Button clear;
+    private CheckBox isSave;
+    //initiate the fragment activators
 
 
     @Override
@@ -61,7 +67,13 @@ public class home_client extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        openDialog();
+        //openDialog();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //openDialog();
     }
 
     @Override
@@ -103,13 +115,22 @@ public class home_client extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+       if (id == R.id.nav_contact) {
+           CompanyDetails fragment = new CompanyDetails();
+           FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+           fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.commit();
+       } else if (id == R.id.nav_branches) {
+           PresentBranches fragment = new PresentBranches();
+           FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+           fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.commit();
+        } else if (id == R.id.nav_myCar) {
+           MyCar fragment = new MyCar();
+           FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+           fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.commit();
+        } else if (id == R.id.nav_logOut) {
 
         } else if (id == R.id.nav_share) {
 
@@ -122,6 +143,14 @@ public class home_client extends AppCompatActivity
         return true;
     }
 
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    log in activity
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     /*clear shared preference*/
     private void clearSharedPreferences()
     {
@@ -139,14 +168,11 @@ public class home_client extends AppCompatActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         if (sharedPreferences.contains(ConstValues.User))
         {
-            Toast.makeText(getApplicationContext(),sharedPreferences.getString(ConstValues.User, null),Toast.LENGTH_LONG).show();
             this.enterUser.setText( sharedPreferences.getString(ConstValues.User, null));
-            Toast.makeText(this, "load name", Toast.LENGTH_SHORT).show();
         }
         if (sharedPreferences.contains(ConstValues.Password))
         {
             enterPassword.setText(sharedPreferences.getString(ConstValues.Password, null));
-            //Toast.makeText(this, "load age", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -176,6 +202,11 @@ public class home_client extends AppCompatActivity
                 {
                     try {
                         Toast.makeText(getApplicationContext(),getString(R.string.welcome) ,Toast.LENGTH_LONG).show();
+                        //if the user wants to save the password save shared preference
+                        if(isSave.isChecked())
+                        {
+                            saveSharedPreferences();
+                        }
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -275,13 +306,15 @@ public class home_client extends AppCompatActivity
         //the dialog's title
         dialog.setTitle(R.string.Welcome_to_Take_And_Go);
 
-        //shared preference
-        loadSharedPreferences();
+
         register = (Button)dialog.findViewById( R.id.register );
         signIn = (Button)dialog.findViewById( R.id.signIn );
+        clear = (Button)dialog.findViewById(R.id.clear);
+        isSave = (CheckBox)dialog.findViewById(R.id.isSave);
         enterUser = (EditText)dialog.findViewById( R.id.enterUser );
         enterPassword = (EditText)dialog.findViewById( R.id.enterPassword );
-
+        //shared preference
+        loadSharedPreferences();
         //register button
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,6 +327,15 @@ public class home_client extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 SignInActivity(dialog);
+            }
+        });
+        
+        //clear preferance
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterUser.setText("");
+                enterPassword.setText("");
             }
         });
 
