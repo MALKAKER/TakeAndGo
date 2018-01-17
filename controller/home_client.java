@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -125,17 +127,61 @@ public class home_client extends AppCompatActivity
            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
            fragmentTransaction.commit();
-        } else if (id == R.id.nav_myCar) {
+        } else if (id == R.id.nav_availableCars) {
+           AvailableCars fragment = new AvailableCars();
+           FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+           fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.commit();
+       }else if (id == R.id.nav_myCar) {
            MyCar fragment = new MyCar();
            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
            fragmentTransaction.commit();
         } else if (id == R.id.nav_logOut) {
+           //log out from the app
+           //dialog asking if the user wants to leave the app
+           AlertDialog.Builder builder=new AlertDialog.Builder(this);
+           builder.setMessage(R.string.Do_you_want_to_exit);
+           //ok - exit
+           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialog, int id) {
 
+                   finish();
+                   Intent i=new Intent();
+                   i.putExtra("finish", true);
+                   i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                   //startActivity(i);
+                   finish();
+
+               }
+           });
+
+           builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialog, int id) {
+                   dialog.cancel();
+               }
+           });
+
+           AlertDialog alert=builder.create();
+           alert.show();
         } else if (id == R.id.nav_share) {
-
+           //sharing the app with apps that can share text
+           Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+           sharingIntent.setType("text/plain");
+           String shareBody = "Hey there I am using Car2Go!";
+           sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Join Car2Go");
+           sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+           startActivity(Intent.createChooser(sharingIntent, "Share via"));
         } else if (id == R.id.nav_send) {
-
+           //sharing the app with apps that can share text
+           Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+           sharingIntent.setType("text/plain");
+           String shareBody = "Hey there I am using Car2Go!";
+           sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Join Car2Go");
+           sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+           startActivity(Intent.createChooser(sharingIntent, "Share via"));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
