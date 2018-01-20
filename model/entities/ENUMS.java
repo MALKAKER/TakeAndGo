@@ -9,7 +9,7 @@ public class ENUMS {
     public enum COMPANY { Audi, BMW, Bugatti, Cadillac, Chevrolet, Citroen, Fiat, Farrari, Ford
     ,Honda, Hummer, Jaguar, JEEP, Kia, Lamborghini, lexus, Mazda, Mercedes_Benz, Mini, Nissan,
     Skoda, Volkswagen, Volvo};
-    public enum COUNTRY {IL, USA, UK};
+    public enum COUNTRY {ISRAEL, USA, UK};
     public enum SAFETY {Mobileye, Other};
     public enum COLORS {Red, Blue, Black, White}
     public enum FUEL_MODE {Empty, Low, Medium, Full}

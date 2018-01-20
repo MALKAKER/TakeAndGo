@@ -12,22 +12,22 @@ public class Branch
     private long branchNumber;
 
     //constructor
-    public Branch(Address branchAddress, int parkingSpace, long branchNumber) throws Exception {
-        this.setBranchAddress(branchAddress);
-        this.setParkingSpace(parkingSpace);
-        this.setBranchNumber(branchNumber);
-    }
-
-    //copy constructor
-    public Branch(Branch newBranch) throws Exception {
-        this.setBranchAddress(newBranch.branchAddress);
-        this.setParkingSpace(newBranch.parkingSpace);
-        this.setBranchNumber(newBranch.branchNumber);
-    }
-
-    public Branch() {
-
-    }
+//    public Branch(Address branchAddress, int parkingSpace, long branchNumber) throws Exception {
+//        this.setBranchAddress(branchAddress);
+//        this.setParkingSpace(parkingSpace);
+//        this.setBranchNumber(branchNumber);
+//    }
+//
+//    //copy constructor
+//    public Branch(Branch newBranch) throws Exception {
+//        this.setBranchAddress(newBranch.branchAddress);
+//        this.setParkingSpace(newBranch.parkingSpace);
+//        this.setBranchNumber(newBranch.branchNumber);
+//    }
+//
+//    public Branch() {
+//
+//    }
 
     public Address getBranchAddress() {
         return branchAddress;

@@ -8,7 +8,6 @@ import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DB_Manager;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
-import com.javaproject.malki.takeandgo.model.entities.CarWithStatus;
 import com.javaproject.malki.takeandgo.model.entities.Client;
 import com.javaproject.malki.takeandgo.model.entities.ENUMS;
 import com.javaproject.malki.takeandgo.model.entities.Order;
@@ -157,7 +156,7 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
     @Override
-    public CarWithStatus GetCar(String ID) throws Exception {
+    public Car GetCar(String ID) throws Exception {
         ContentValues values = new ContentValues();
         //prepare query
         values.put(ConstCars.CarConst.LICENCE_NUMBER, ID);
@@ -171,7 +170,7 @@ public class MySQL_DBManager implements DB_Manager{
             JSONObject jsonObject = array.getJSONObject(0);
             //convert json format to contentValues
             ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
-            CarWithStatus car = ConstCars.ContentValuesToCarWithStatus(contentValues);
+            Car car = ConstCars.ContentValuesToCar(contentValues);
             return car;
         }
         throw new Exception("ERROR: The order doesn't exist!\n");

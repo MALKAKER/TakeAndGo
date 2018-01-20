@@ -75,7 +75,7 @@ public class home_client extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        //openDialog();
+        openDialog();
     }
 
     @Override
@@ -139,34 +139,9 @@ public class home_client extends AppCompatActivity
            fragmentTransaction.commit();
         } else if (id == R.id.nav_logOut) {
            //log out from the app
-           //dialog asking if the user wants to leave the app
-           AlertDialog.Builder builder=new AlertDialog.Builder(this);
-           builder.setMessage(R.string.Do_you_want_to_exit);
-           //ok - exit
-           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-               @Override
-               public void onClick(DialogInterface dialog, int id) {
+           logOutFromTheApp();
 
-                   finish();
-                   Intent i=new Intent();
-                   i.putExtra("finish", true);
-                   i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-                   //startActivity(i);
-                   finish();
-
-               }
-           });
-
-           builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-               @Override
-               public void onClick(DialogInterface dialog, int id) {
-                   dialog.cancel();
-               }
-           });
-
-           AlertDialog alert=builder.create();
-           alert.show();
-        } else if (id == R.id.nav_share) {
+       } else if (id == R.id.nav_share) {
            //sharing the app with apps that can share text
            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
            sharingIntent.setType("text/plain");
@@ -189,14 +164,40 @@ public class home_client extends AppCompatActivity
         return true;
     }
 
+    private void logOutFromTheApp() {
+        //dialog asking if the user wants to leave the app
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setMessage(R.string.Do_you_want_to_exit);
+        //ok - exit
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+
+                finish();
+                Intent i=new Intent();
+                i.putExtra("finish", true);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                //startActivity(i);
+                finish();
+
+            }
+        });
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert=builder.create();
+        alert.show();
+    }
 
 
-
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    log in activity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        log in activity
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     /*clear shared preference*/
     private void clearSharedPreferences()
     {

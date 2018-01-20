@@ -30,7 +30,7 @@ public interface DB_Manager {
     public Branch GetBranch(int ID) throws Exception;
     //Check if the car is already exist in the data base and return the object
     //TODO TRANSFER TO CARWITHSTATUS
-    public CarWithStatus GetCar(String ID) throws Exception;
+    public Car GetCar(String ID) throws Exception;
     //Add client to data base
     public String AddClient(ContentValues values) throws Exception;
     //Add Order into data base
