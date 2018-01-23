@@ -130,6 +130,7 @@ public class MyCar extends Fragment {
                 }
                 else if(!isChecked)
                 {
+                    flag = false;
                     closeOrder();
                 }
             }
@@ -139,6 +140,7 @@ public class MyCar extends Fragment {
     }
 
     private void closeOrder() {
+
     }
 
 }

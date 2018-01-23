@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -501,7 +502,7 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
     @Override
-    public boolean CloseOrder(float kilometers, int orderNumber) {
+    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location) {
         boolean success = true;
         try {
             Date date = new Date();
@@ -510,6 +511,9 @@ public class MySQL_DBManager implements DB_Manager{
             query.put("kilometers", kilometers);
             query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
             query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
+            DecimalFormat df = new DecimalFormat("0.00##");
+            query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(cost));
             //post query
             String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
             success = Boolean.valueOf(str);
@@ -521,7 +525,7 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
     @Override
-    public boolean CloseOrder(float kilometers, int orderNumber, Boolean isFuel, Float fuelVol) {
+    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location, Boolean isFuel, Float fuelVol) {
         boolean success = true;
         try {
             Date date = new Date();
@@ -530,6 +534,9 @@ public class MySQL_DBManager implements DB_Manager{
             query.put("kilometers", kilometers);
             query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
             query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
+            DecimalFormat df = new DecimalFormat("0.00##");
+            query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(cost));
             if(isFuel)
             {
                 query.put(ConstCars.OrderConst.IS_FUEL, isFuel.toString());
@@ -537,7 +544,7 @@ public class MySQL_DBManager implements DB_Manager{
             }
             else
             {
-                return CloseOrder(kilometers, orderNumber);
+                return CloseOrder(kilometers, orderNumber, cost, location);
             }
             //post query
             String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );

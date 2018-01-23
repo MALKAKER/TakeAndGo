@@ -9,6 +9,7 @@ import com.javaproject.malki.takeandgo.model.entities.Client;
 import com.javaproject.malki.takeandgo.model.entities.ENUMS;
 import com.javaproject.malki.takeandgo.model.entities.Order;
 
+import java.text.DecimalFormat;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -63,8 +64,8 @@ public interface DB_Manager {
     // return active orders
     public List<Order> GetOpenOrders();
     //close order, user enter the number of kilometers
-    public boolean CloseOrder(float kilometers, int orderNumber, Boolean isFuel, Float fuelVol);
-    public boolean CloseOrder(float kilometers, int orderNumber);
+    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location, Boolean isFuel, Float fuelVol);
+    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location);
     //check if order closed in the previous 10 sec.
     public boolean isClosedOrder();
 

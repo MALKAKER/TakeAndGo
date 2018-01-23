@@ -213,11 +213,12 @@ public class ConstCars {
         order.setOrderStatus(cv.getAsBoolean(OrderConst.ORDER_STATUS));
         order.setCarNumber(cv.getAsString(OrderConst.CAR_NUMBER));//?
         order.setStartRent(tmp.parse(cv.getAsString(OrderConst.START_RENT)) );
-        //order.setEndRent(tmp.parse(cv.getAsString(OrderConst.END_RENT)));
+        order.setEndRent(tmp.parse(cv.getAsString(OrderConst.END_RENT)));
         order.setStartMileage(cv.getAsFloat(OrderConst.START_MILEAGE));
-        //order.setEndMileage(cv.getAsFloat(OrderConst.END_MILEAGE));
-        //order.setFuel(cv.getAsBoolean(OrderConst.IS_FUEL));
-        //order.setBillAmount((DecimalFormat) cv.get(OrderConst.BILL_AMOUNT));
+        order.setEndMileage(cv.getAsFloat(OrderConst.END_MILEAGE));
+        order.setFuel(cv.getAsBoolean(OrderConst.IS_FUEL));
+        DecimalFormat df = new DecimalFormat(".##");
+        order.setBillAmount(new DecimalFormat(df.format(cv.getAsFloat(OrderConst.BILL_AMOUNT))));
         return order;
     }
 }
