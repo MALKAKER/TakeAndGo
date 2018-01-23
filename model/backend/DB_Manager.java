@@ -55,7 +55,7 @@ public interface DB_Manager {
     // return list of available cars in a specific location
     public List<Car> AvailableCars(String location);
     // return list of available cars in defined radius near the current location
-    public List<Car> AvailableCars(int radius);
+    public List<Car> AvailableCars(int radius, String address);
     //Bonus-> return available cars per branch according to model
     public List<Branch> IsModelInBranches(String model);
     //return branches where the model exist there

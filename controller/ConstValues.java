@@ -12,4 +12,5 @@ public class ConstValues {
     public static final String User = "userKey";
     public static final String Password = "passwordKey";
     public static final String SavePref = "save";
+    public static final String ON_BOARD_SERVICE = "com.javaproject.malki.takeandgo.ON_BOARD_SERVICE";
 }

@@ -129,7 +129,9 @@ public class Order
 
     public void setEndMileage(float endMileage) throws Exception {
         ErrorValue(endMileage);
-        this.endMileage = endMileage;
+        if(!isOrderStatus())
+            this.endMileage = endMileage;
+
     }
 
     public boolean isFuel() {
@@ -137,7 +139,8 @@ public class Order
     }
 
     public void setFuel(boolean fuel) {
-        isFuel = fuel;
+        if(!isOrderStatus())
+            isFuel = fuel;
     }
 
     public float getFuelVol() {
@@ -145,8 +148,10 @@ public class Order
     }
 
     public void setFuelVol(float fuelVol) throws Exception {
-        ErrorValue(fuelVol);
-        this.fuelVol =isFuel()? fuelVol : 0;
+        if(!isOrderStatus()){
+            ErrorValue(fuelVol);
+            this.fuelVol =isFuel()? fuelVol : 0;
+        }
     }
 
     public DecimalFormat getBillAmount() {
@@ -154,7 +159,8 @@ public class Order
     }
 
     public void setBillAmount(DecimalFormat billAmount) {
-        this.billAmount = billAmount;
+        if(!isOrderStatus())
+            this.billAmount = billAmount;
     }
 
     public int getOrderNumber() {

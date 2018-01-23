@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.javaproject.malki.takeandgo.HelloService;
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Client;
@@ -116,27 +117,38 @@ public class home_client extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //kind of exstras for the fragment
+        Bundle bundle = new Bundle();
+        bundle.putString(ConstValues.User, enterUser.getText().toString());
 
-       if (id == R.id.nav_contact) {
+        if (id == R.id.nav_contact) {
            CompanyDetails fragment = new CompanyDetails();
+            fragment.setArguments(bundle);
            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.addToBackStack(null);
            fragmentTransaction.commit();
        } else if (id == R.id.nav_branches) {
            PresentBranches fragment = new PresentBranches();
+            fragment.setArguments(bundle);
            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.addToBackStack(null);
            fragmentTransaction.commit();
         } else if (id == R.id.nav_availableCars) {
            AvailableCars fragment = new AvailableCars();
+            fragment.setArguments(bundle);
            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+           fragmentTransaction.addToBackStack(null);
            fragmentTransaction.commit();
        }else if (id == R.id.nav_myCar) {
-           MyCar fragment = new MyCar();
-           FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-           fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
-           fragmentTransaction.commit();
+            MyCar fragment = new MyCar();
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         } else if (id == R.id.nav_logOut) {
            //log out from the app
            logOutFromTheApp();

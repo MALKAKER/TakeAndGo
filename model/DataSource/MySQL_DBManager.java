@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
+import com.javaproject.malki.takeandgo.controller.ConstValues;
 import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DB_Manager;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
@@ -16,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -61,9 +63,11 @@ public class MySQL_DBManager implements DB_Manager{
             values.put(ConstCars.ClientConst.CLIENT_ID, ID);
             String result = PHPtools.POST(WEB_URL + "/User_Exist.php", values);
             exist = Boolean.parseBoolean(result.replace(" ",""));
-
+            result=result;
         }catch (Exception e)
-        {}
+        {
+            printLog("");
+        }
         if (exist)
             return true;
         else
@@ -438,12 +442,13 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
     @Override
-    public List<Car> AvailableCars(int radius) {
+    public List<Car> AvailableCars(int radius, String address) {
         List<Car> result = new ArrayList<Car>();
 
         try {
             ContentValues query = new ContentValues();
             query.put("radius", radius);
+            query.put("loc", address);
             String str = PHPtools.POST(WEB_URL + "/getDistance.php", query);
             JSONArray array = new JSONObject(str).getJSONArray("cars");
             for (int i = 0; i < array.length(); i++) {
@@ -484,7 +489,6 @@ public class MySQL_DBManager implements DB_Manager{
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-
                 ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
                 Order order = ConstCars.ContentValuesToOrder(contentValues);
                 result.add(order);

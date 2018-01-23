@@ -2,6 +2,7 @@ package com.javaproject.malki.takeandgo.controller;
 
 
 import android.content.ClipData;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -27,7 +30,9 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.javaproject.malki.takeandgo.CarOnBoard;
 import com.javaproject.malki.takeandgo.R;
+import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
@@ -35,7 +40,11 @@ import com.javaproject.malki.takeandgo.model.entities.Car;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
+import static android.R.attr.key;
+import static android.R.attr.value;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +58,7 @@ public class PresentBranches extends Fragment{
     View viewFragment;
     //private List<Branch> branches;
     private Branch selectedBranch;
+    private Car selectedCar;
     private List<Branch> myStringList;
     List<Branch> Branches;
     private List<Car> cars;
@@ -95,7 +105,41 @@ public class PresentBranches extends Fragment{
     }
 
     /*create order for current car and user*/
-    private void CreateOrder() {
+    private void CreateOrder() throws Exception {
+        Bundle bundle = getArguments();
+        final String user = bundle.getString(ConstValues.User);
+        Date d = new Date();
+        //Object date = new java.sql.Timestamp(d.getTime());
+        final ContentValues cv = new ContentValues();
+        //there is no chance that the user who is loged is not the current user
+        cv.put(ConstCars.OrderConst.CLIENT_NUMBER, user);
+        cv.put(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
+        //in the server... cv.put(ConstCars.OrderConst.START_MILEAGE, selectedCar.getMileage());
+        cv.put(ConstCars.OrderConst.START_RENT, String.valueOf(d));
+        new AsyncTask<Void, Void, String>(){
+            @Override
+            protected void onPostExecute(String num) {
+                //add a service that remind that the app is on board
+                Bundle extras = new Bundle();
+                extras.putString(ConstCars.OrderConst.CLIENT_NUMBER, user);
+                extras.putString(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
+                extras.putString(ConstCars.OrderConst.ORDER_NUMBER, num);
+                getActivity().startService(new Intent(getActivity(), CarOnBoard.class).putExtras(extras).setAction(ConstValues.ON_BOARD_SERVICE));
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    String num = DbManagerFactory.getManager().AddOrder(cv).replace(" ","");
+                    return num;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+
+
     }
 
     /*show available cars in the selected branch*/
@@ -156,8 +200,16 @@ public class PresentBranches extends Fragment{
         presentBranchesCarsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //Car car =
-                CreateOrder();
+                selectedCar = cars.get(i);
+                try {
+                    CreateOrder();
+                    view.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    view.setVisibility(View.VISIBLE);
+                    Toast toast = Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT );
+                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    toast.show();
+                }
             }
         });
         presentBranchesBranchView = (LinearLayout) viewFragment.findViewById(R.id.present_branches_branchView);
