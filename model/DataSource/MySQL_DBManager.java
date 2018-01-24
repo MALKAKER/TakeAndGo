@@ -384,7 +384,7 @@ public class MySQL_DBManager implements DB_Manager{
             query.put("mileage", kilometers);
             query.put(ConstCars.CarConst.LICENCE_NUMBER, licencePlate);
             //post query
-            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
+            String str = PHPtools.POST(WEB_URL + "/CloseOrder.php", query );
             success = Boolean.valueOf(str);
             return success;
         } catch (Exception e) {
@@ -515,7 +515,7 @@ public class MySQL_DBManager implements DB_Manager{
             DecimalFormat df = new DecimalFormat("0.00##");
             query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(cost));
             //post query
-            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
+            String str = PHPtools.POST(WEB_URL + "/CloseOrder.php", query );
             success = Boolean.valueOf(str);
             return success;
         } catch (Exception e) {
@@ -534,9 +534,9 @@ public class MySQL_DBManager implements DB_Manager{
             query.put("kilometers", kilometers);
             query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
             query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
-            query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
             DecimalFormat df = new DecimalFormat("0.00##");
-            query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(cost));
+            query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
+            query.put(ConstCars.CarConst.LOCATION_NUMBER,String.valueOf(location));
             if(isFuel)
             {
                 query.put(ConstCars.OrderConst.IS_FUEL, isFuel.toString());
@@ -547,8 +547,8 @@ public class MySQL_DBManager implements DB_Manager{
                 return CloseOrder(kilometers, orderNumber, cost, location);
             }
             //post query
-            String str = PHPtools.POST(WEB_URL + "/UpdateMileage.php", query );
-            success = Boolean.valueOf(str);
+            String str = PHPtools.POST(WEB_URL + "/CloseOrder.php", query );
+            success = Boolean.valueOf(str.replace(" ",""));
             return success;
         } catch (Exception e) {
             success= false;

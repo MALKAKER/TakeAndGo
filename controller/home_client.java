@@ -70,7 +70,17 @@ public class home_client extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //openDialog();
+        //open Default fragment;
+        openDialog();
+        //kind of exstras for the fragment
+        Bundle bundle = new Bundle();
+        bundle.putString(ConstValues.User, enterUser.getText().toString());
+        MyCar fragment = new MyCar();
+        fragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override

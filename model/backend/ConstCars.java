@@ -207,18 +207,35 @@ public class ConstCars {
         return client;
     }
     public static  Order ContentValuesToOrder(ContentValues cv) throws Exception {
-        SimpleDateFormat tmp = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-        Order order = new Order(cv.getAsInteger(OrderConst.ORDER_NUMBER));
+        SimpleDateFormat tmp = new SimpleDateFormat("EEE MMM d HH:mm:ss");
+        Order order = new Order();
+        order.setOrderNumber(cv.getAsInteger(OrderConst.ORDER_NUMBER));
         order.setClientNumber(cv.getAsString(OrderConst.CLIENT_NUMBER));
         order.setOrderStatus(cv.getAsBoolean(OrderConst.ORDER_STATUS));
         order.setCarNumber(cv.getAsString(OrderConst.CAR_NUMBER));//?
         order.setStartRent(tmp.parse(cv.getAsString(OrderConst.START_RENT)) );
-        order.setEndRent(tmp.parse(cv.getAsString(OrderConst.END_RENT)));
+        if(!cv.getAsString(OrderConst.END_RENT).equals("null"))
+            order.setEndRent(tmp.parse(cv.getAsString(OrderConst.END_RENT)));
+        else
+            order.setEndRent(null);
         order.setStartMileage(cv.getAsFloat(OrderConst.START_MILEAGE));
-        order.setEndMileage(cv.getAsFloat(OrderConst.END_MILEAGE));
-        order.setFuel(cv.getAsBoolean(OrderConst.IS_FUEL));
+        if(!cv.getAsString(OrderConst.END_MILEAGE).equals("null"))
+            order.setEndMileage(cv.getAsFloat(OrderConst.END_MILEAGE));
+        else
+            order.setEndMileage(null);
+        if (!cv.getAsString(OrderConst.IS_FUEL).equals("null"))
+            order.setFuel(cv.getAsBoolean(OrderConst.IS_FUEL));
+        else
+            order.setFuel(null);
+        if(!cv.getAsString(OrderConst.FUEL_VOL).equals("null"))
+            order.setFuelVol(cv.getAsFloat(OrderConst.FUEL_VOL));
+        else
+            order.setFuelVol(null);
         DecimalFormat df = new DecimalFormat(".##");
-        order.setBillAmount(new DecimalFormat(df.format(cv.getAsFloat(OrderConst.BILL_AMOUNT))));
+        if (!cv.getAsString(OrderConst.BILL_AMOUNT).equals("null"))
+            order.setBillAmount(new DecimalFormat(df.format(cv.getAsFloat(OrderConst.BILL_AMOUNT))));
+        else
+            order.setBillAmount(null);
         return order;
     }
 }

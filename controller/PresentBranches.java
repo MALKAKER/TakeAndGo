@@ -125,6 +125,7 @@ public class PresentBranches extends Fragment{
                 extras.putString(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
                 extras.putString(ConstCars.OrderConst.ORDER_NUMBER, num);
                 getActivity().startService(new Intent(getActivity(), CarOnBoard.class).putExtras(extras).setAction(ConstValues.ON_BOARD_SERVICE));
+                showCars();
             }
 
             @Override
@@ -203,9 +204,7 @@ public class PresentBranches extends Fragment{
                 selectedCar = cars.get(i);
                 try {
                     CreateOrder();
-                    view.setVisibility(View.GONE);
                 } catch (Exception e) {
-                    view.setVisibility(View.VISIBLE);
                     Toast toast = Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT );
                     toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
                     toast.show();
