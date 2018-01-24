@@ -122,8 +122,8 @@ public class PresentBranches extends Fragment{
                 //add a service that remind that the app is on board
                 Bundle extras = new Bundle();
                 extras.putString(ConstCars.OrderConst.CLIENT_NUMBER, user);
-                extras.putString(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
-                extras.putString(ConstCars.OrderConst.ORDER_NUMBER, num);
+                extras.putString(ConstCars.OrderConst.CAR_NUMBER, String.valueOf(selectedCar.getLicencePlate()));
+                extras.putString(ConstCars.OrderConst.ORDER_NUMBER, String.valueOf(num));
                 getActivity().startService(new Intent(getActivity(), CarOnBoard.class).putExtras(extras).setAction(ConstValues.ON_BOARD_SERVICE));
                 showCars();
             }
