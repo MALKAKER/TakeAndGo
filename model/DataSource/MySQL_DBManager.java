@@ -558,7 +558,33 @@ public class MySQL_DBManager implements DB_Manager{
 
     @Override
     public boolean isClosedOrder() {
-        //todo, dont know what to do here
+        List<Order> result = new ArrayList<Order>();
+        Date d = new Date();
+        try {
+
+            String str = PHPtools.GET(WEB_URL + "/GetClosedOrders.php");
+            JSONArray array = new JSONObject(str).getJSONArray("orders");
+
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+                ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                Order order = ConstCars.ContentValuesToOrder(contentValues);
+                result.add(order);
+            }
+            for(Order o : result)
+            {
+                //check difference between
+                long duration = d.getDate() - o.getEndRent().getDate();
+                long min = duration/1000 % 60;
+
+                if (min <= 10)
+                    return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }

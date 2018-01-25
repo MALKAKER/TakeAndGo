@@ -1,27 +1,21 @@
 package com.javaproject.malki.takeandgo.controller;
 
 
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -30,21 +24,16 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.javaproject.malki.takeandgo.CarOnBoard;
+import com.javaproject.malki.takeandgo.model.service.CarOnBoard;
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import static android.R.attr.key;
-import static android.R.attr.value;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -256,7 +245,8 @@ public class PresentBranches extends Fragment{
                                 }
                             };
 
-                        }};
+                        }
+                    };
 
                     if(adapter != null) {
                         presentBranchesBranchesList.setAdapter(adapter);

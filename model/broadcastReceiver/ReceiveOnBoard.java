@@ -1,4 +1,4 @@
-package com.javaproject.malki.takeandgo;
+package com.javaproject.malki.takeandgo.model.broadcastReceiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

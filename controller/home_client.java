@@ -1,8 +1,6 @@
 package com.javaproject.malki.takeandgo.controller;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +26,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.javaproject.malki.takeandgo.HelloService;
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Client;
@@ -71,6 +68,12 @@ public class home_client extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //open Default fragment;
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         openDialog();
         //kind of exstras for the fragment
         Bundle bundle = new Bundle();
@@ -81,12 +84,6 @@ public class home_client extends AppCompatActivity
         fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        openDialog();
     }
 
     @Override

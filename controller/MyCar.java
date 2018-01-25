@@ -1,20 +1,13 @@
 package com.javaproject.malki.takeandgo.controller;
 
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -22,21 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.javaproject.malki.takeandgo.R;
-import com.javaproject.malki.takeandgo.ReceiveOnBoard;
 import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Car;
 import com.javaproject.malki.takeandgo.model.entities.Order;
 
 import java.text.DecimalFormat;
-import android.app.DialogFragment;
-import android.app.Fragment;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,8 +50,9 @@ public class MyCar extends Fragment {
         // Required empty public constructor
     }
 
-    public void checkOrderOpen()
+    public boolean checkOrderOpen()
     {
+        final boolean b = true;
         new AsyncTask<Void,Void,Void>()
         {
             @Override
@@ -87,6 +76,7 @@ public class MyCar extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.There_is_a_problem_with_the_car), Toast.LENGTH_SHORT).show();
                     if(currentOrder == null)
                         Toast.makeText(getActivity(), getString(R.string.No_open_order), Toast.LENGTH_SHORT).show();
+                    flag = false;
                 }
             }
 
@@ -117,6 +107,7 @@ public class MyCar extends Fragment {
                 return null;
             }
         }.execute();
+        return b;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,8 +140,10 @@ public class MyCar extends Fragment {
                 {
                     flag = false;
                     closeOrder();
-                    isRent.setChecked(false);
-                    myCar.setVisibility(View.GONE);
+                    if (!checkOrderOpen()){
+                        isRent.setChecked(false);
+                        myCar.setVisibility(View.GONE);
+                    }
                 }
             }
         });
