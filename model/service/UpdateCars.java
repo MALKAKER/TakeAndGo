@@ -3,6 +3,11 @@
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Bundle;
+import android.os.ResultReceiver;
+import android.util.Log;
+
+import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -21,71 +26,63 @@ public class UpdateCars extends IntentService {
     private static final String EXTRA_PARAM1 = "com.javaproject.malki.takeandgo.model.service.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.javaproject.malki.takeandgo.model.service.extra.PARAM2";
 
+    //status
+    public static final int AVAILABILITY_STATUS= 1;
+    public static final int STATUS_RUNNING = 0;
+    public static final int STATUS_FINISHED = 1;
+    public static final int STATUS_ERROR = 2;
+    public static final String POSITIVE = "positive";
+    //to the debugger
+    private static final String TAG = "UpdateService";
+
+
     public UpdateCars() {
         super("UpdateCars");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, UpdateCars.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, UpdateCars.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
+        Log.d(TAG, "Update Service Started!");
+
+        final ResultReceiver receiver = intent.getParcelableExtra("receiver");
+        Boolean isNewAvailableCars = false;
+        /* Update UI: Service is Running */
+        receiver.send(STATUS_RUNNING, Bundle.EMPTY);
+        try {
+            Thread.sleep(10000);
+            isNewAvailableCars = DbManagerFactory.getManager().isClosedOrder();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(POSITIVE, isNewAvailableCars);
+            receiver.send(AVAILABILITY_STATUS,bundle);
+        } catch (InterruptedException e) {
+                /* Sending error message back to activity */
+            Bundle bundle = new Bundle();
+            bundle.putString(Intent.EXTRA_TEXT, e.toString());
+            receiver.send(STATUS_ERROR, bundle);
+            e.printStackTrace();
         }
+//        while (true)
+//        {
+//            /* Update UI: Service is Running */
+//            receiver.send(STATUS_RUNNING, Bundle.EMPTY);
+//            try {
+//                Thread.sleep(10000);
+//                isNewAvailableCars = DbManagerFactory.getManager().isClosedOrder();
+//                Bundle bundle = new Bundle();
+//                bundle.putBoolean("positive", isNewAvailableCars);
+//                receiver.send(AVAILABILITY_STATUS,bundle);
+//            } catch (InterruptedException e) {
+//                /* Sending error message back to activity */
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Intent.EXTRA_TEXT, e.toString());
+//                receiver.send(STATUS_ERROR, bundle);
+//                e.printStackTrace();
+//            }
+//        }
+
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Client;
+import com.javaproject.malki.takeandgo.model.receiver.AvailableCarsReceiver;
+import com.javaproject.malki.takeandgo.model.service.UpdateCars;
 
 public class home_client extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,13 +52,13 @@ public class home_client extends AppCompatActivity
         setContentView(R.layout.activity_home_client);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        String message = getString(R.string.No_update);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                StartService(view);
+
             }
         });
 
@@ -67,8 +70,37 @@ public class home_client extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //open Default fragment;
+    }
+//todo
+    private void StartService(final View view) {
+        /* Starting Download Service */
 
+        AvailableCarsReceiver mReceiver = new AvailableCarsReceiver(new Handler())
+        {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                Toast.makeText(getApplicationContext(),"55",Toast.LENGTH_SHORT).show();
+                boolean result = resultData.getBoolean(UpdateCars.POSITIVE);
+                if(result)
+                {
+                    //todo updateCarList();
+                    String message = getString(R.string.New_cars_are_available);
+                    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                else
+                {
+                    String message = getString(R.string.No_update);
+                    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
+
+            }
+        };
+        //mReceiver.setReceiver();
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, UpdateCars.class);
+        startService(intent);
     }
 
     @Override
@@ -407,4 +439,5 @@ public class home_client extends AppCompatActivity
 
         dialog.show();
     }
+
 }

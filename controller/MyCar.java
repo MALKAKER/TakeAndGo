@@ -72,11 +72,13 @@ public class MyCar extends Fragment {
                 }else
                 {
                     isRent.setChecked(false);
-                    if(car==null)
+                    myCar.setVisibility(View.GONE);
+                    if(car == null && currentOrder != null)
                         Toast.makeText(getActivity(), getString(R.string.There_is_a_problem_with_the_car), Toast.LENGTH_SHORT).show();
-                    if(currentOrder == null)
+                    if(currentOrder == null && car != null)
                         Toast.makeText(getActivity(), getString(R.string.No_open_order), Toast.LENGTH_SHORT).show();
                     flag = false;
+
                 }
             }
 
@@ -126,6 +128,7 @@ public class MyCar extends Fragment {
         checkOrderOpen();
         isRent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Toast.makeText(getActivity(),"dont annoy me", Toast.LENGTH_SHORT).show();
                 if(isChecked && !flag)
                 {
                     //change to the fragment where users open the orders
@@ -133,7 +136,7 @@ public class MyCar extends Fragment {
                     fragment.setArguments(getArguments());
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
-                    fragmentTransaction.addToBackStack(null);
+                    //fragmentTransaction.addToBackStack(null); todo return to main fragment
                     fragmentTransaction.commit();
                 }
                 else if(!isChecked)
