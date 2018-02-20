@@ -2,8 +2,11 @@ package com.javaproject.malki.takeandgo.controller;
 
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,21 +34,24 @@ import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Client;
 import com.javaproject.malki.takeandgo.model.receiver.AvailableCarsReceiver;
+import com.javaproject.malki.takeandgo.model.service.RoutineUpdateService;
 import com.javaproject.malki.takeandgo.model.service.UpdateCars;
 
 public class home_client extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    final Dialog dialog = new Dialog(this); // Context, this, etc.
+    //final Dialog dialog = new Dialog(this); // Context, this, etc.
     private EditText enterUser;
     private EditText enterPassword;
     private Button register;
     private Button signIn;
     private Button clear;
     private CheckBox isSave;
+
+    //intent filter
+    private IntentFilter mIntentFilter;
+    private BroadcastReceiver mReceiver ;
     //initiate the fragment activators
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +59,11 @@ public class home_client extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         String message = getString(R.string.No_update);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StartService(view);
+
 
             }
         });
@@ -70,38 +76,64 @@ public class home_client extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-//todo
-    private void StartService(final View view) {
-        /* Starting Download Service */
 
-        AvailableCarsReceiver mReceiver = new AvailableCarsReceiver(new Handler())
-        {
+        //generate intent filter for the 2 types of update and on-board service
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(ConstValues.ON_ROUTINE_UPDATE_SERVICE);
+        mIntentFilter.addAction(ConstValues.ON_UPDATE_SERVICE);
+        //on board service
+        mIntentFilter.addAction(ConstValues.ON_BOARD_SERVICE);
+
+        Intent serviceIntent = new Intent(this, RoutineUpdateService.class);
+        startService(serviceIntent);
+
+        //generate receiver
+        mReceiver = new BroadcastReceiver() {
             @Override
-            protected void onReceiveResult(int resultCode, Bundle resultData) {
-                Toast.makeText(getApplicationContext(),"55",Toast.LENGTH_SHORT).show();
-                boolean result = resultData.getBoolean(UpdateCars.POSITIVE);
-                if(result)
+            public void onReceive(Context context, Intent intent) {
+                String doIt = intent.getAction();
+                switch (doIt)
                 {
-                    //todo updateCarList();
-                    String message = getString(R.string.New_cars_are_available);
-                    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                    case ConstValues.ON_ROUTINE_UPDATE_SERVICE:
+                        if(intent.getBooleanExtra(ConstValues.IS_AVAILABLE_CARS,false))
+                        {
+                            String message = getString(R.string.New_cars_are_available);
+                            Snackbar.make(fab, message, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                            UpdateCarList();
+                        }
+                        break;
+                    case ConstValues.ON_UPDATE_SERVICE:
+                        // do nothing -> not necessary
+                        break;
+                    case ConstValues.ON_BOARD_SERVICE:
+                        // not necessary, it other optional way to initiate mycar...
+                        break;
                 }
-                else
-                {
-                    String message = getString(R.string.No_update);
-                    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-
-
             }
         };
-        //mReceiver.setReceiver();
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, UpdateCars.class);
-        startService(intent);
     }
+    /*
+    * if their are a new available cars while the user in the activity of show cars
+    * the app update the list
+    * */
+    private void UpdateCarList() {
+        PresentBranches fragment = (PresentBranches) getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment.isInLayout())
+        {
+            fragment.showCars();
+        }
+        else
+        {
+            //their is another fragment which show the cars
+            AvailableCars anotherOption = (AvailableCars) getFragmentManager().findFragmentById(R.id.fragment_container);
+            if (anotherOption.isInLayout())
+            {
+                //anotherOption.; todo
+            }
+        }
+    }
+
 
     @Override
     protected void onStart() {
@@ -244,7 +276,22 @@ public class home_client extends AppCompatActivity
         AlertDialog alert=builder.create();
         alert.show();
     }
-
+    /*
+    * register receiver
+    * */
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+    /*
+    * release receiver
+    * */
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mReceiver);
+        super.onPause();
+    }
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         log in activity

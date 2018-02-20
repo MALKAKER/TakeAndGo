@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToBranch;
 import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToCar;
@@ -575,8 +576,8 @@ public class MySQL_DBManager implements DB_Manager{
             for(Order o : result)
             {
                 //check difference between
-                long duration = d.getDate() - o.getEndRent().getDate();
-                long min = duration/1000 % 60;
+                long duration = d.getTime() - o.getEndRent().getTime();
+                long min = TimeUnit.MILLISECONDS.toMinutes(duration);
 
                 if (min <= 10)
                     return true;

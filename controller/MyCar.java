@@ -128,7 +128,6 @@ public class MyCar extends Fragment {
         checkOrderOpen();
         isRent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(getActivity(),"dont annoy me", Toast.LENGTH_SHORT).show();
                 if(isChecked && !flag)
                 {
                     //change to the fragment where users open the orders
