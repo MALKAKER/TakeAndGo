@@ -64,8 +64,8 @@ public interface DB_Manager {
     // return active orders
     public List<Order> GetOpenOrders();
     //close order, user enter the number of kilometers
-    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location, Boolean isFuel, Float fuelVol);
-    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location);
+    public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location, Boolean isFuel, Float fuelVol);
+    public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location);
     //check if order closed in the previous 10 sec.
     public boolean isClosedOrder();
 

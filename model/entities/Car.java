@@ -25,7 +25,7 @@ public class Car
 
     public void setMileage(float mileage) throws Exception {
         //there is no way the car mileage will be under 100 km
-        if (mileage < 100)
+        if (mileage < 1)
         {
             throw new Exception("ERROR: Too less mileage!");
         }

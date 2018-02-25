@@ -1,6 +1,7 @@
 package com.javaproject.malki.takeandgo.controller;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,10 +33,14 @@ import android.widget.Toast;
 
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
+import com.javaproject.malki.takeandgo.model.entities.Branch;
+import com.javaproject.malki.takeandgo.model.entities.Car;
 import com.javaproject.malki.takeandgo.model.entities.Client;
 import com.javaproject.malki.takeandgo.model.receiver.AvailableCarsReceiver;
 import com.javaproject.malki.takeandgo.model.service.RoutineUpdateService;
 import com.javaproject.malki.takeandgo.model.service.UpdateCars;
+
+import java.util.List;
 
 public class home_client extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,8 +68,10 @@ public class home_client extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                String message = getString(R.string.refreshing);
+                Snackbar.make(fab, message, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                UpdateCarList();
             }
         });
 
@@ -118,20 +125,17 @@ public class home_client extends AppCompatActivity
     * the app update the list
     * */
     private void UpdateCarList() {
-        PresentBranches fragment = (PresentBranches) getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment.isInLayout())
-        {
-            fragment.showCars();
+        Fragment f = getFragmentManager().findFragmentById(R.id.fragment_container);
+        if(f != null && f instanceof PresentBranches) {
+            PresentBranches presentBranches = (PresentBranches) f;
+            presentBranches.showCars();
         }
-        else
+        else if(f != null && f instanceof AvailableCars)
         {
-            //their is another fragment which show the cars
-            AvailableCars anotherOption = (AvailableCars) getFragmentManager().findFragmentById(R.id.fragment_container);
-            if (anotherOption.isInLayout())
-            {
-                //anotherOption.; todo
-            }
+            AvailableCars availableCars = (AvailableCars) f;
+            //todo: update the list of available cars
         }
+
     }
 
 

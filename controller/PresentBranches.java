@@ -31,6 +31,7 @@ import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,13 +99,14 @@ public class PresentBranches extends Fragment{
         Bundle bundle = getArguments();
         final String user = bundle.getString(ConstValues.User);
         Date d = new Date();
+        SimpleDateFormat tmp = new SimpleDateFormat(ConstValues.TIME_FORMAT);
         //Object date = new java.sql.Timestamp(d.getTime());
         final ContentValues cv = new ContentValues();
         //there is no chance that the user who is loged is not the current user
         cv.put(ConstCars.OrderConst.CLIENT_NUMBER, user);
         cv.put(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
         //in the server... cv.put(ConstCars.OrderConst.START_MILEAGE, selectedCar.getMileage());
-        cv.put(ConstCars.OrderConst.START_RENT, String.valueOf(d));
+        cv.put(ConstCars.OrderConst.START_RENT, tmp.format(d));
         new AsyncTask<Void, Void, String>(){
             @Override
             protected void onPostExecute(String num) {

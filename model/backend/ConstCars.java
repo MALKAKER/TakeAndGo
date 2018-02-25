@@ -2,6 +2,7 @@ package com.javaproject.malki.takeandgo.model.backend;
 
 import android.content.ContentValues;
 
+import com.javaproject.malki.takeandgo.controller.ConstValues;
 import com.javaproject.malki.takeandgo.model.entities.Address;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.Car;
@@ -116,7 +117,7 @@ public class ConstCars {
         cv.put(CarConst.LOCATION_NUMBER, car.getLocationNumber());//what is value of?
         cv.put(CarConst.MILEAGE, car.getMileage());
         cv.put(CarConst.MODEL_TYPE, String.valueOf(car.getModelType()));
-        cv.put(CarConst.MODEL_TYPE, String.valueOf(car.getFuelMode()));
+        cv.put(CarConst.FUEL, String.valueOf(car.getFuelMode()));
         return cv;
     }
 
@@ -144,13 +145,14 @@ public class ConstCars {
     public static ContentValues OrderToContentValues (Order order)
     {
         ContentValues cv = new ContentValues();
+        SimpleDateFormat tmp = new SimpleDateFormat(ConstValues.TIME_FORMAT);
         cv.put(OrderConst.BILL_AMOUNT, String.valueOf(order.getBillAmount()));
         cv.put(OrderConst.CAR_NUMBER, order.getCarNumber());//what is value of?
         cv.put(OrderConst.CLIENT_NUMBER, order.getClientNumber());
         cv.put(OrderConst.END_MILEAGE, order.getEndMileage());
         cv.put(OrderConst.START_MILEAGE, order.getStartMileage());
-        cv.put(OrderConst.START_RENT, String.valueOf(order.getStartRent()));
-        cv.put(OrderConst.END_RENT, String.valueOf(order.getEndRent()));
+        cv.put(OrderConst.START_RENT, tmp.format(order.getStartRent()));
+        cv.put(OrderConst.END_RENT, tmp.format(order.getEndRent()));
         cv.put(OrderConst.FUEL_VOL, order.getFuelVol());
         cv.put(OrderConst.IS_FUEL, order.isFuel());
         cv.put(OrderConst.ORDER_NUMBER, order.getOrderNumber());
@@ -207,7 +209,7 @@ public class ConstCars {
         return client;
     }
     public static  Order ContentValuesToOrder(ContentValues cv) throws Exception {
-        SimpleDateFormat tmp = new SimpleDateFormat("EEE MMM d HH:mm:ss");
+        SimpleDateFormat tmp = new SimpleDateFormat(ConstValues.TIME_FORMAT);
         Order order = new Order();
         order.setOrderNumber(cv.getAsInteger(OrderConst.ORDER_NUMBER));
         order.setClientNumber(cv.getAsString(OrderConst.CLIENT_NUMBER));
@@ -233,9 +235,9 @@ public class ConstCars {
             order.setFuelVol(null);
         DecimalFormat df = new DecimalFormat(".##");
         if (!cv.getAsString(OrderConst.BILL_AMOUNT).equals("null"))
-            order.setBillAmount(new DecimalFormat(df.format(cv.getAsFloat(OrderConst.BILL_AMOUNT))));
+            order.setBillAmount(cv.getAsFloat(OrderConst.BILL_AMOUNT));
         else
-            order.setBillAmount(null);
+            order.setBillAmount(0);
         return order;
     }
 }

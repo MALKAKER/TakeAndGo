@@ -22,4 +22,10 @@ public class ConstValues {
     //flag for new available cars
     public static final String IS_AVAILABLE_CARS = "com.javaproject.malki.takeandgo.IS_AVAILABLE_CARS";
 
+
+    //time format
+    public static final String TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
+
+    public static final int UPDATE_TIME = 10;
+
 }

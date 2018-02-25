@@ -1,7 +1,6 @@
 package com.javaproject.malki.takeandgo.model.DataSource;
 
 import android.content.ContentValues;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
 import com.javaproject.malki.takeandgo.controller.ConstValues;
@@ -24,11 +23,6 @@ import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToBranch;
-import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToCar;
-import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToClient;
-import static com.javaproject.malki.takeandgo.model.backend.ConstCars.ContentValuesToOrder;
 
 /**
  * Created by malki on 30-Dec-17.
@@ -417,6 +411,7 @@ public class MySQL_DBManager implements DB_Manager{
         }
         return null;
     }
+//    private static final String TAG = "AvailableCars";
 
     @Override
     public List<Car> AvailableCars(String location) {
@@ -426,23 +421,27 @@ public class MySQL_DBManager implements DB_Manager{
             ContentValues query = new ContentValues();
             query.put(ConstCars.CarConst.LOCATION_NUMBER, location);
             String str = PHPtools.POST(WEB_URL + "/AvailableCars.php", query);
+            //Log.i(TAG, str);
+            //Log.i(TAG, location);
             JSONArray array = new JSONObject(str).getJSONArray("availableCars");
-
+            //Log.i(TAG, array.toString());
 
             for (int i = 0; i < array.length(); i++) {
+                //Log.i(TAG, array.getJSONObject(i).toString());
                 JSONObject jsonObject = array.getJSONObject(i);
-
+                //Log.i(TAG, jsonObject.toString());
                 ContentValues contentValues = PHPtools.JsonToContentValues(jsonObject);
+                //Log.i(TAG, contentValues.toString());
                 Car car = ConstCars.ContentValuesToCar(contentValues);
                 result.add(car);
             }
             return result;
         } catch (Exception e) {
+            //Log.i(TAG, e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
-
     @Override
     public List<Car> AvailableCars(int radius, String address) {
         List<Car> result = new ArrayList<Car>();
@@ -501,40 +500,50 @@ public class MySQL_DBManager implements DB_Manager{
         }
         return null;
     }
-
+//    private static final String TAG = "closeOrderCheck";//!
     @Override
-    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location) {
+    public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location) {
         boolean success = true;
         try {
             Date date = new Date();
+//            Log.i(TAG, "kilometers="+String.valueOf(kilometers));
+//            Log.i(TAG, "orderNumber="+String.valueOf(orderNumber));
+//            Log.i(TAG, "cost="+String.valueOf(cost));
+//            Log.i(TAG, "location="+String.valueOf(location));
+
+            SimpleDateFormat tmp = new SimpleDateFormat(ConstValues.TIME_FORMAT);
             //create query that update the order
             ContentValues query = new ContentValues();
             query.put("kilometers", kilometers);
             query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
-            query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            query.put(ConstCars.OrderConst.END_RENT, tmp.format(date));
             query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
             DecimalFormat df = new DecimalFormat("0.00##");
-            query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(cost));
+            query.put(ConstCars.CarConst.LOCATION_NUMBER,df.format(location));
             //post query
             String str = PHPtools.POST(WEB_URL + "/CloseOrder.php", query );
-            success = Boolean.valueOf(str);
+            //Log.i(TAG, "str="+str);
+            success = Boolean.valueOf(str.replace(" ",""));
+            //Log.i(TAG, "success="+String.valueOf(success));
             return success;
         } catch (Exception e) {
+            //Log.i(TAG, e.getMessage());
             success= false;
         }
         return  success;
     }
 
     @Override
-    public boolean CloseOrder(float kilometers, int orderNumber, DecimalFormat cost, long location, Boolean isFuel, Float fuelVol) {
+    public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location, Boolean isFuel, Float fuelVol) {
         boolean success = true;
         try {
             Date date = new Date();
+            SimpleDateFormat tmp = new SimpleDateFormat(ConstValues.TIME_FORMAT);
             //create query that update the order
             ContentValues query = new ContentValues();
             query.put("kilometers", kilometers);
             query.put(ConstCars.OrderConst.ORDER_NUMBER, orderNumber);
-            query.put(ConstCars.OrderConst.END_RENT, String.valueOf(date));
+            query.put(ConstCars.OrderConst.END_RENT, tmp.format(date));
             DecimalFormat df = new DecimalFormat("0.00##");
             query.put(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(cost));
             query.put(ConstCars.CarConst.LOCATION_NUMBER,String.valueOf(location));
@@ -577,9 +586,9 @@ public class MySQL_DBManager implements DB_Manager{
             {
                 //check difference between
                 long duration = d.getTime() - o.getEndRent().getTime();
-                long min = TimeUnit.MILLISECONDS.toMinutes(duration);
+                long sec = TimeUnit.MILLISECONDS.toSeconds(duration);
 
-                if (min <= 10)
+                if (sec <= ConstValues.UPDATE_TIME)
                     return true;
             }
 

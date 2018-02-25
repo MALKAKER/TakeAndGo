@@ -63,24 +63,7 @@ public class UpdateCars extends IntentService {
             receiver.send(STATUS_ERROR, bundle);
             e.printStackTrace();
         }
-//        while (true)
-//        {
-//            /* Update UI: Service is Running */
-//            receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-//            try {
-//                Thread.sleep(10000);
-//                isNewAvailableCars = DbManagerFactory.getManager().isClosedOrder();
-//                Bundle bundle = new Bundle();
-//                bundle.putBoolean("positive", isNewAvailableCars);
-//                receiver.send(AVAILABILITY_STATUS,bundle);
-//            } catch (InterruptedException e) {
-//                /* Sending error message back to activity */
-//                Bundle bundle = new Bundle();
-//                bundle.putString(Intent.EXTRA_TEXT, e.toString());
-//                receiver.send(STATUS_ERROR, bundle);
-//                e.printStackTrace();
-//            }
-//        }
+
 
     }
 

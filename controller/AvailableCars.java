@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
+ * return available cars in a nominal radius
  */
 public class AvailableCars extends Fragment implements View.OnClickListener, NumberPicker.OnValueChangeListener {
     private int Radius;
@@ -42,6 +43,9 @@ public class AvailableCars extends Fragment implements View.OnClickListener, Num
         // Required empty public constructor
     }
 
+    /*
+    * show() to pick a radius number
+    * */
     public void show()
     {
 
@@ -65,8 +69,35 @@ public class AvailableCars extends Fragment implements View.OnClickListener, Num
         {
             @Override
             public void onClick(View v) {
-                if (v == addRadiusButton)
+                //if (v == addRadiusButton)
+                new AsyncTask<Void, Void , ListAdapter>()
+                {
+                    @Override
+                    protected void onPostExecute(ListAdapter adapter) {
+                        try {
+                            if (adapter != null)
+                                presentCarsListView.setAdapter(adapter);
+                            else
+                                throw new Exception("No results");
+                        }catch (Exception e)
+                        {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT);
+                        }
+                    }
 
+                    @Override
+                    protected ListAdapter doInBackground(Void... voids) {
+                        //List<Car> results = new ArrayList<Car>();
+                        if(availableCars!=null)
+                            availableCars.clear();
+                        availableCars = DbManagerFactory.getManager().AvailableCars(Radius, address);
+                        if(availableCars!=null)
+                            return new ArrayAdapter<Car>(getActivity(), R.layout.result_presentation, availableCars);
+                        else
+                            return null;
+                    }
+
+                }.execute();
                 d.dismiss();
             }
         });
@@ -90,38 +121,18 @@ public class AvailableCars extends Fragment implements View.OnClickListener, Num
     public void onClick(View view) {
        
         if ( view == searchBranchesNearby ) {
-            Toast.makeText(getActivity(), "before" ,Toast.LENGTH_SHORT).show();
-            show();
-            Toast.makeText(getActivity(), "after" ,Toast.LENGTH_SHORT).show();
+
             address = searchAddress.getText().toString();
-            new AsyncTask<Void, Void , ListAdapter>()
+            if (!address.equals(""))
             {
-                @Override
-                protected void onPostExecute(ListAdapter adapter) {
-                    try {
-                        if (adapter != null)
-                            presentCarsListView.setAdapter(adapter);
-                        else
-                            throw new Exception("No results");
-                    }catch (Exception e)
-                    {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT);
-                    }
-                }
+                //pick radius and search available cars
+                show();
+            }
+            else
+            {
+                //do nothing
+            }
 
-                @Override
-                protected ListAdapter doInBackground(Void... voids) {
-                    //List<Car> results = new ArrayList<Car>();
-                    if(availableCars!=null)
-                        availableCars.clear();
-                    availableCars = DbManagerFactory.getManager().AvailableCars(Radius, address);
-                    if(availableCars!=null)
-                        return new ArrayAdapter<Car>(getActivity(), R.layout.result_presentation, availableCars);
-                    else
-                        return null;
-                }
-
-            }.execute();
         }
 
     }

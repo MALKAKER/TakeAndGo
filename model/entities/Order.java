@@ -21,7 +21,7 @@ public class Order
     private Float endMileage;
     private boolean isFuel;
     private Float fuelVol;
-    private DecimalFormat billAmount;
+    private float billAmount;
     private int orderNumber;
 
 
@@ -37,7 +37,7 @@ public class Order
 
     //constructor
     public Order(String clientNumber, boolean orderStatus, String carNumber, Date endRent, Float startMileage,
-                 Float endMileage, Boolean isFuel, DecimalFormat billAmount) throws Exception {
+                 Float endMileage, Boolean isFuel, float billAmount) throws Exception {
         this.setClientNumber(clientNumber);
         this.setOrderStatus(orderStatus);
         this.setCarNumber(carNumber);
@@ -156,11 +156,11 @@ public class Order
         }
     }
 
-    public DecimalFormat getBillAmount() {
+    public float getBillAmount() {
         return billAmount;
     }
 
-    public void setBillAmount(DecimalFormat billAmount) {
+    public void setBillAmount(float billAmount) {
         if(!isOrderStatus())
             this.billAmount = billAmount;
     }

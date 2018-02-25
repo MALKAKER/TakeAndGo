@@ -34,6 +34,7 @@ public class MyCar extends Fragment {
     Car car;
     View view;
     //flag if the order is new
+    public Boolean isOrderClosed  = false;
     Boolean flag;
     final float pricePerDay = new Float("120");
     private RelativeLayout myCar;
@@ -161,12 +162,25 @@ public class MyCar extends Fragment {
         CloseOrderDialog newFragment = new CloseOrderDialog().newInstance();
         newFragment.setArguments(args);
         newFragment.show(getActivity().getFragmentManager(),"dialog");
+
+    }
+
+    /*
+    * using on resume to update the screen according to the actions had done recently
+    * */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!checkOrderOpen()){
+            isRent.setChecked(false);
+            myCar.setVisibility(View.GONE);
+        }
     }
 
     private DecimalFormat calculateCost() {
         DecimalFormat d = null;
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat(ConstValues.TIME_FORMAT);
         Date d1, d2;
         try {
             d1 = currentOrder.getStartRent();

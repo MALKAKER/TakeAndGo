@@ -6,11 +6,13 @@ import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +31,14 @@ import com.javaproject.malki.takeandgo.model.backend.ConstCars;
 import com.javaproject.malki.takeandgo.model.backend.DbManagerFactory;
 import com.javaproject.malki.takeandgo.model.entities.Branch;
 import com.javaproject.malki.takeandgo.model.entities.ENUMS;
+import com.javaproject.malki.takeandgo.model.service.CarOnBoard;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.javaproject.malki.takeandgo.R.id.myCar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +50,8 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
     private CheckBox checkBox;
     private Button closeOrderButton;
     private Button cancalButton;
+    //operation
+    private static final String TAG = "closeOrderCheck";
     /**
      * Find the Views in the layout<br />
      * <br />
@@ -211,8 +218,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
             final Boolean isFuel = checkBox.isChecked();
             final int f = isFuel? fuelAmount.getProgress():0;
             final int orderNumber = Integer.parseInt(mArgs.getString(ConstCars.OrderConst.ORDER_NUMBER));
-            DecimalFormat df = new DecimalFormat(".##");
-            final DecimalFormat bill = new DecimalFormat(df.format(mArgs.getFloat(ConstCars.OrderConst.BILL_AMOUNT)+ level * 10 - 5 * f));
+            final float bill = mArgs.getFloat(ConstCars.OrderConst.BILL_AMOUNT)+ level * 10 - 5 * f;
             final String location = pickLocation.getSelectedItem().toString();
             checkFill(location);
 
@@ -227,7 +233,9 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
                         String msg;
                         if(B)
                         {
-                            msg = "Car returned successfully:)";
+                            //stop service
+                            getActivity().stopService(new Intent(getActivity(), CarOnBoard.class));
+                            msg = "Car returned successfully :)";
                         }
                         else
                         {
@@ -251,6 +259,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
             }
             else
             {
+                Log.i(TAG, "fuel 262");
                 new AsyncTask<Void,Void,Boolean>()
                 {
                     @Override
