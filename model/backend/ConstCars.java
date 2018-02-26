@@ -20,7 +20,10 @@ import java.util.Date;
  * help class to convert and storage the data as content value
  * Created by malki on 11-Nov-17.
  */
-// A conversion from object oriented into contentValues
+
+/*
+* consts are used as key to help persist the objects
+* */
 public class ConstCars {
     public static class AddressConst
     {
@@ -92,7 +95,10 @@ public class ConstCars {
         public static String FUEL_VOL = "fuelVol" ;
         public static String BILL_AMOUNT = "billAmount";
     }
-    //methods that get object oriented items and return contentValues
+
+    /*
+    * methods that get object oriented items and return contentValues
+    * */
     public static ContentValues AddressToContentValues (Address address)
     {
         ContentValues cv = new ContentValues();
@@ -159,7 +165,10 @@ public class ConstCars {
         cv.put(OrderConst.ORDER_STATUS, order.isOrderStatus());
         return cv;
     }
-    //Methods that get contentValues and return object oriented items
+
+    /*
+    * Methods that get contentValues and return object oriented items
+    * */
     public static  Address ContentValuesToAddress(ContentValues cv) throws Exception {
         Address address = new Address();
         address.setCity(cv.getAsString(AddressConst.CITY));

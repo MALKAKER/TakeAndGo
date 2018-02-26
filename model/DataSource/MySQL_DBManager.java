@@ -25,19 +25,25 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Manage the data which is received from the server(MYSQL) and convert it to a known entity
+ * also manipulate data, and som more function on the data
  * Created by malki on 30-Dec-17.
  */
 
 public class MySQL_DBManager implements DB_Manager{
 
-
+    //user name
     private final String UserName="maker";
     private final String WEB_URL = "http://"+UserName+".vlab.jct.ac.il/Car2Go/secondApp";
 
-
+    //this flags indicates if the data updated in the program
     private boolean updateFlag = false;
 
 
+    /**
+     * printLog - > help function for cod analysis
+     * @param message -> message to the logcat window
+     */
     public void printLog(String message)
     {
         Log.d(this.getClass().getName(),"\n"+message);
@@ -51,6 +57,11 @@ public class MySQL_DBManager implements DB_Manager{
         updateFlag = true;
     }
 
+    /**
+     * ClientExist -. checks if the client exist in the DS
+     * @param ID - client id
+     * @return true if the client exist, otherwise, false
+     */
     @Override
     public boolean ClientExist(String ID) {
         boolean exist = false;
@@ -62,14 +73,19 @@ public class MySQL_DBManager implements DB_Manager{
             result=result;
         }catch (Exception e)
         {
-            printLog("");
-        }
+            printLog(e.getMessage());
+    }
         if (exist)
             return true;
         else
             return false;
     }
 
+    /**
+     * BranchExist - check if the branch exist in the DS
+     * @param ID - Branch ID
+     * @return - true if the branch exist, otherwise, false
+     */
     @Override
     public boolean BranchExist(int ID) {
         boolean exist = false;
@@ -80,13 +96,21 @@ public class MySQL_DBManager implements DB_Manager{
             exist = Boolean.parseBoolean(result);
 
         }catch (Exception e)
-        {}
+        {
+            printLog(e.getMessage());
+        }
         if (exist)
             return true;
         else
             return false;
     }
 
+    /**
+     * GetClient - gets client details
+     * @param ID - clients ID
+     * @return -Client object
+     * @throws Exception - if the client doesn't exist
+     */
     @Override
     public Client GetClient(String ID) throws Exception {
         ContentValues values = new ContentValues();
@@ -110,7 +134,12 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
 
-
+    /**
+     * GetOrder - gets order details
+     * @param ID - order id
+     * @return - order object
+     * @throws Exception
+     */
     @Override
     public Order GetOrder(int ID) throws Exception {
         ContentValues values = new ContentValues();
@@ -133,6 +162,12 @@ public class MySQL_DBManager implements DB_Manager{
 
     }
 
+    /**
+     * GetBranch - gets branch details
+     * @param ID - branches ID
+     * @return - Branch object
+     * @throws Exception - if the branch doesn't exist
+     */
     @Override
     public Branch GetBranch(int ID) throws Exception {
         ContentValues values = new ContentValues();
@@ -155,6 +190,12 @@ public class MySQL_DBManager implements DB_Manager{
 
     }
 
+    /**
+     * GetCar - gets car details
+     * @param ID - car id
+     * @return - car object
+     * @throws Exception - if car doesn't exist
+     */
     @Override
     public Car GetCar(String ID) throws Exception {
         ContentValues values = new ContentValues();
@@ -177,6 +218,12 @@ public class MySQL_DBManager implements DB_Manager{
 
     }
 
+    /**
+     * AddClient - adds client into DS
+     * @param values - client details
+     * @return - user id
+     * @throws Exception - if the addition wasn't done
+     */
     @Override
     public String AddClient(ContentValues values) throws Exception {
         String result = null;
@@ -204,6 +251,12 @@ public class MySQL_DBManager implements DB_Manager{
 
     }
 
+    /**
+     * AddOrder - adds order into DS
+     * @param values - order details
+     * @return - order ID
+     * @throws Exception - if the order wasn't added successfully
+     */
     @Override
     public String AddOrder(ContentValues values) throws Exception {
         String result = null;
@@ -228,6 +281,12 @@ public class MySQL_DBManager implements DB_Manager{
         return result;
     }
 
+    /**
+     * AddBranch - adds branch into DS
+     * @param values - branch details
+     * @return - branch ID
+     * @throws Exception - IF THE BRANCH WAS'NT added successfully
+     */
     @Override
     public String AddBranch(ContentValues values) throws Exception {
         String result = null;
@@ -252,6 +311,15 @@ public class MySQL_DBManager implements DB_Manager{
         return  result;
     }
 
+    /**
+     * UpdateQuantity - update fuel quantity and then convert the number into enum
+     * @param start - start fuel amount
+     * @param end - end fuel amount
+     * @param newFuel - the final fuel amount
+     * @param licencePlate  - the car's license plate
+     * @return - enum full-mode
+     * @throws Exception
+     */
     @Override
     public ENUMS.FUEL_MODE UpdateQuantity(float start, float end, float newFuel, String licencePlate) throws Exception {
         float quantity = (start-end) * 11 - newFuel;
@@ -274,6 +342,10 @@ public class MySQL_DBManager implements DB_Manager{
     }
 
 
+    /**
+     * GetClients - get all clients from the DB
+     * @return -list of client object
+     */
     @Override
     public List<Client> GetClients() {
         List<Client> result = new ArrayList<Client>();
@@ -298,6 +370,10 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 
+    /**
+     * GetBranches - get branches from DS
+     * @return List of branch objects
+     */
     @Override
     public List<Branch> GetBranches() {
         List<Branch> result = new ArrayList<Branch>();
@@ -322,6 +398,10 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 
+    /**
+     * GetCars - get cars from DS
+     * @return - list of car object
+     */
     @Override
     public List<Car> GetCars() {
         List<Car> result = new ArrayList<Car>();
@@ -346,6 +426,10 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 
+    /**
+     * GetOrders - get orders from DS
+     * @return - list of order object
+     */
     @Override
     public List<Order> GetOrders() {
         List<Order> result = new ArrayList<Order>();
@@ -388,6 +472,10 @@ public class MySQL_DBManager implements DB_Manager{
         return  success;
     }
 
+    /**
+     * AvailableCars - get from the server all available cars
+     * @return - list of car object
+     */
     @Override
     public List<Car> AvailableCars() {
         List<Car> result = new ArrayList<Car>();
@@ -412,7 +500,10 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 //    private static final String TAG = "AvailableCars";
-
+    /**
+     * AvailableCars - get from the server all available cars in a specific branch
+     * @return - list of car object
+     */
     @Override
     public List<Car> AvailableCars(String location) {
         List<Car> result = new ArrayList<Car>();
@@ -442,6 +533,10 @@ public class MySQL_DBManager implements DB_Manager{
         }
         return null;
     }
+    /**
+     * AvailableCars - get from the server all available cars in the radius around the nominal address
+     * @return - list of car object
+     */
     @Override
     public List<Car> AvailableCars(int radius, String address) {
         List<Car> result = new ArrayList<Car>();
@@ -478,6 +573,10 @@ public class MySQL_DBManager implements DB_Manager{
         return null;
     }
 
+    /**
+     * GetOpenOrders - gets the open orders from the server
+     * @return - list of order object
+     */
     @Override
     public List<Order> GetOpenOrders() {
         List<Order> result = new ArrayList<Order>();
@@ -500,6 +599,15 @@ public class MySQL_DBManager implements DB_Manager{
         }
         return null;
     }
+
+    /**
+     * CloseOrder- close order when the client doesn't refill the fuel tank
+     * @param kilometers - the kilometers the client rode
+     * @param orderNumber - order number
+     * @param cost - the payment for the rent
+     * @param location - where the car is parking now
+     * @return - true if the order closed successfully
+     */
 //    private static final String TAG = "closeOrderCheck";//!
     @Override
     public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location) {
@@ -533,6 +641,16 @@ public class MySQL_DBManager implements DB_Manager{
         return  success;
     }
 
+    /**
+     * CloseOrder - close open order , when client return the car to some branch
+     * @param kilometers - the kilometers the client rode
+     * @param orderNumber - order number
+     * @param cost - the payment for the rent
+     * @param location - where the car is parking now
+     * @param isFuel - if the client refill the fuel tank
+     * @param fuelVol - the fuel volume after the ride
+     * @return true if the order closed successfully
+     */
     @Override
     public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location, Boolean isFuel, Float fuelVol) {
         boolean success = true;
@@ -566,6 +684,10 @@ public class MySQL_DBManager implements DB_Manager{
         return  success;
     }
 
+    /**
+     * isClosedOrder - chack if there is at least one order that had closed in the nearest time
+     * @return true if order closed recently, otherwise false
+     */
     @Override
     public boolean isClosedOrder() {
         List<Order> result = new ArrayList<Order>();

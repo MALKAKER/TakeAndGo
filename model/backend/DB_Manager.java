@@ -66,7 +66,7 @@ public interface DB_Manager {
     //close order, user enter the number of kilometers
     public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location, Boolean isFuel, Float fuelVol);
     public boolean CloseOrder(float kilometers, int orderNumber, float cost, long location);
-    //check if order closed in the previous 10 sec.
+    //check if order closed in the previous n sec.
     public boolean isClosedOrder();
 
 }

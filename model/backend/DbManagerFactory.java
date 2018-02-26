@@ -11,12 +11,15 @@ import com.javaproject.malki.takeandgo.model.DataSource.MySQL_DBManager;
 public class DbManagerFactory {
 
 
-        //here the type of the DB , if the type is changed,
-        //the developer needs only to change that line
-        static DB_Manager manager = null;
 
+
+        static DB_Manager manager = null;
+        /*
+        * here the type of the DB , if the type is changed
+        * */
         public static DB_Manager getManager() {
         if (manager == null)
+            //the developer needs only to change that line
             manager = new MySQL_DBManager();
         return manager;
 

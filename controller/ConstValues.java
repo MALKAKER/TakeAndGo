@@ -1,7 +1,7 @@
 package com.javaproject.malki.takeandgo.controller;
 
 /**
- * const values used in the user interface
+ * const values used in the user interface code
  * Created by malki on 20-Dec-17.
  */
 
