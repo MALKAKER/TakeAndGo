@@ -38,7 +38,8 @@ public class RoutineUpdateService extends IntentService {
         {
             /* Update UI: Service is Running */
             try {
-                Thread.sleep(10000);
+                //update the car list routinly every ConstValues.UPDATE_TIME * 100 times
+                Thread.sleep(ConstValues.UPDATE_TIME * 100);
                 Intent broadcastIntent = new Intent();
                 Boolean isNewCars = DbManagerFactory.getManager().isClosedOrder();;
                 broadcastIntent.setAction(ConstValues.ON_ROUTINE_UPDATE_SERVICE);

@@ -41,6 +41,8 @@ import java.util.List;
 import static com.javaproject.malki.takeandgo.R.id.myCar;
 
 /**
+ * dialog where the client fill in the details of the order
+ * when he/she return the car
  * A simple {@link Fragment} subclass.
  */
 public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
@@ -52,12 +54,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
     private Button cancalButton;
     //operation
     private static final String TAG = "closeOrderCheck";
-    /**
-     * Find the Views in the layout<br />
-     * <br />
-     * Auto-created on 2018-01-23 23:39:08 by Android Layout Finder
-     * (http://www.buzzingandroid.com/tools/android-layout-finder)
-     */
+
 
     //get strings from current DB to spinner
     private List<String> getLocations(List<Branch> branchList)
@@ -71,7 +68,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
         return lst;
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//seekBar implementation
+    //seekBar implementation
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
         Toast.makeText(getActivity(),progress +"% fuel", Toast.LENGTH_SHORT).show();
@@ -98,7 +95,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //init spiner
+    //init spinner
     private void initiSpinners(List<String> b) {
         ArrayAdapter<String> branchAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,b);
         branchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -210,6 +207,9 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
         }.execute();
     }
 
+    /**
+     * closeAction, get details from the user then call db-manager to close the order
+     */
     private void closeAction() {
         try {
             final ContentValues contentValues = new ContentValues();
@@ -222,7 +222,7 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
             final String location = pickLocation.getSelectedItem().toString();
             checkFill(location);
 
-
+            //if the user refill the fuel tank
             if(isFuel)
             {
 

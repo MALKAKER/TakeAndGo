@@ -47,7 +47,6 @@ public class CompanyDetails extends Fragment implements View.OnClickListener {
         switch (view.getId())
         {
             case R.id.companyDetailsPhone:
-                Toast.makeText(getActivity(),"```````````",Toast.LENGTH_LONG).show();
                 dial_company();
                 break;
             case R.id.companyDetailsEmail:

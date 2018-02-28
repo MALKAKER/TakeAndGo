@@ -1,6 +1,5 @@
 package com.javaproject.malki.takeandgo.controller;
 
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -25,7 +24,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * return available cars in a nominal radius
+ * return available cars according to a nominal radius and an address
  */
 public class AvailableCars extends Fragment implements View.OnClickListener, NumberPicker.OnValueChangeListener {
     private int Radius;

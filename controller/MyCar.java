@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * MyCar, indicate if the client rent a car,
+ * and shows the car details
  * A simple {@link Fragment} subclass.
  */
 public class MyCar extends Fragment {
@@ -51,6 +53,10 @@ public class MyCar extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * checkOrderOpen, check if order associate with the current client is open
+     * @return
+     */
     public boolean checkOrderOpen()
     {
         final boolean b = true;
@@ -94,7 +100,6 @@ public class MyCar extends Fragment {
                             currentOrder = o;
                             try {
                                 car = DbManagerFactory.getManager().GetCar(o.getCarNumber());
-                                car = car;
                             } catch (Exception e) {
                                 //in case there is a error in the car don't show order
                                 car = null;
@@ -154,6 +159,9 @@ public class MyCar extends Fragment {
         return view;
     }
 
+    /**
+     * closeOrder, open close order dialog
+     */
     private void closeOrder() {
         Bundle args = new Bundle();
         args.putString(ConstCars.OrderConst.ORDER_NUMBER, String.valueOf(currentOrder.getOrderNumber()));
@@ -177,6 +185,10 @@ public class MyCar extends Fragment {
         }
     }
 
+    /**
+     * calculateCost, calculate cost for each order
+     * @return basic cost in decimalformat
+     */
     private DecimalFormat calculateCost() {
         DecimalFormat d = null;
         Date date = new Date();

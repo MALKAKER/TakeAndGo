@@ -142,10 +142,13 @@ public class home_client extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        //I want the dialog to be open daily while the user
+        // return to the app so the dialog is opened here
         openDialog();
         //kind of exstras for the fragment
         Bundle bundle = new Bundle();
         bundle.putString(ConstValues.User, enterUser.getText().toString());
+        //initiate the view with my car fragment
         MyCar fragment = new MyCar();
         fragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -341,6 +344,14 @@ public class home_client extends AppCompatActivity
 //            Toast.makeText(this, "failed to save Preferences", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * CheckPassword, confirms user password
+     * @param name
+     * @param password1
+     * @param dialog
+     * @throws Exception
+     */
     private void CheckPassword(final String name, final String password1, final Dialog dialog) throws Exception {
         new AsyncTask<Void, Void, Boolean>()
         {
@@ -390,11 +401,20 @@ public class home_client extends AppCompatActivity
             } }.execute();
 
     }
+
+    /**
+     * RegisterActivity, go to the register activity
+     */
     private void RegisterActivity()
     {
         Intent intent = new Intent(this.getBaseContext(),Register.class);
         startActivity(intent);
     }
+
+    /**
+     * SignInActivity, main function to control the sign/log in activity
+     * @param d
+     */
     private void SignInActivity(Dialog d)
     {
         try
@@ -440,6 +460,7 @@ public class home_client extends AppCompatActivity
         }
         return true;
     }
+
     /*
     * opens login dialog
     * */

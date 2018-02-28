@@ -113,7 +113,7 @@ public class PresentBranches extends Fragment{
                 //add a service that remind that the app is on board
                 Bundle extras = new Bundle();
                 extras.putString(ConstCars.OrderConst.CLIENT_NUMBER, user);
-                extras.putString(ConstCars.OrderConst.CAR_NUMBER, String.valueOf(selectedCar.getLicencePlate()));
+                extras.putString(ConstCars.OrderConst.CAR_NUMBER, selectedCar.getLicencePlate().toString());
                 extras.putString(ConstCars.OrderConst.ORDER_NUMBER, String.valueOf(num));
                 getActivity().startService(new Intent(getActivity(), CarOnBoard.class).putExtras(extras).setAction(ConstValues.ON_BOARD_SERVICE));
                 showCars();
@@ -208,6 +208,9 @@ public class PresentBranches extends Fragment{
         return viewFragment;
     }
 
+    /**
+     * ShowFilteredBranches, filter branch according to city
+     */
     private void ShowFilteredBranches() {
         new AsyncTask<Void, Void , List<Branch>>()
         {
@@ -216,7 +219,7 @@ public class PresentBranches extends Fragment{
                 try {
                     myStringList = new ArrayList<Branch>();
                     myStringList.addAll(Branches);
-                    //TODO, I had tried a lot of times to adapt a castume layout but with no success....
+                    //TODO, I had tried a lot of times to adapt a custume layout but with no success....
                     final ArrayAdapter adapter =new ArrayAdapter<Branch>(getActivity().getBaseContext(), R.layout.result_presentation, myStringList)
                     {
 
