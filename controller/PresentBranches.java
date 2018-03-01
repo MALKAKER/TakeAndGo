@@ -160,7 +160,9 @@ public class PresentBranches extends Fragment{
                 //List<Car> results = new ArrayList<Car>();
                 if(cars!=null)
                     cars.clear();
-                cars = DbManagerFactory.getManager().AvailableCars(String.valueOf(selectedBranch.getBranchNumber()));
+                //check if a branch was selected
+                if(selectedBranch != null)
+                    cars = DbManagerFactory.getManager().AvailableCars(String.valueOf(selectedBranch.getBranchNumber()));
                 if(cars!=null)
                     return new ArrayAdapter<Car>(getActivity(), R.layout.result_presentation, cars);
                 else

@@ -464,7 +464,7 @@ public class MySQL_DBManager implements DB_Manager{
             query.put(ConstCars.CarConst.LICENCE_NUMBER, licencePlate);
             //post query
             String str = PHPtools.POST(WEB_URL + "/CloseOrder.php", query );
-            success = Boolean.valueOf(str);
+            success = Boolean.valueOf(str.replace(" ",""));
             return success;
         } catch (Exception e) {
             success= false;
