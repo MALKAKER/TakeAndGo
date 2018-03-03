@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,14 +155,15 @@ public class PresentBranches extends Fragment{
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT);
                 }
             }
-
+            //private static final String TAG = "update_maker";
             @Override
             protected ListAdapter doInBackground(Void... voids) {
-                //List<Car> results = new ArrayList<Car>();
+                //Log.i(TAG, String.valueOf(selectedBranch));
                 if(cars!=null)
                     cars.clear();
                 //check if a branch was selected
-                if(selectedBranch != null)
+                if(!selectedBranch.equals(null))
+                    //Log.i(TAG, "if statement");
                     cars = DbManagerFactory.getManager().AvailableCars(String.valueOf(selectedBranch.getBranchNumber()));
                 if(cars!=null)
                     return new ArrayAdapter<Car>(getActivity(), R.layout.result_presentation, cars);

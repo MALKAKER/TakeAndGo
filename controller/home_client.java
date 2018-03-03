@@ -94,6 +94,15 @@ public class home_client extends AppCompatActivity
         Intent serviceIntent = new Intent(this, RoutineUpdateService.class);
         startService(serviceIntent);
 
+        //initiate the view with my car fragment, I want that happen only once
+        //when the client open the app in the first time a day, when he returns to the app- I want him to return to the last
+        //option he was in.
+        MyCar fragment = new MyCar();
+        fragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
         //generate receiver
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -138,23 +147,15 @@ public class home_client extends AppCompatActivity
 
     }
 
-
+    //kind of exstras for the fragment
+    Bundle bundle = new Bundle();
     @Override
     protected void onStart() {
         super.onStart();
         //I want the dialog to be open daily while the user
         // return to the app so the dialog is opened here
         openDialog();
-        //kind of exstras for the fragment
-        Bundle bundle = new Bundle();
         bundle.putString(ConstValues.User, enterUser.getText().toString());
-        //initiate the view with my car fragment
-        MyCar fragment = new MyCar();
-        fragment.setArguments(bundle);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);//add(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 
     @Override

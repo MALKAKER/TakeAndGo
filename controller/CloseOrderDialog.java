@@ -235,11 +235,11 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
                         {
                             //stop service
                             getActivity().stopService(new Intent(getActivity(), CarOnBoard.class));
-                            msg = "Car returned successfully :)";
+                            msg = getString(R.string.Car_returned_successfully);
                         }
                         else
                         {
-                            msg = "failed to close order";
+                            msg = getString(R.string.failed_to_close_order);
                         }
                         Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG );
                         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
@@ -267,11 +267,11 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
                         String msg;
                         if(B)
                         {
-                            msg = "Order closed";
+                            msg = getString(R.string.Car_returned_successfully);
                         }
                         else
                         {
-                            msg = "failed to close order";
+                            msg = getString(R.string.failed_to_close_order);
                         }
                         dismiss();
                         Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG );
