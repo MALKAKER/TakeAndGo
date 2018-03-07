@@ -25,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.javaproject.malki.takeandgo.model.entities.Order;
 import com.javaproject.malki.takeandgo.model.service.CarOnBoard;
 import com.javaproject.malki.takeandgo.R;
 import com.javaproject.malki.takeandgo.model.backend.ConstCars;
@@ -198,7 +199,38 @@ public class PresentBranches extends Fragment{
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedCar = cars.get(i);
                 try {
-                    CreateOrder();
+                    //the client allowed to rent only one car
+                    new AsyncTask<Void,Void,Boolean>()
+                    {
+                        @Override
+                        protected void onPostExecute(Boolean aBoolean) {
+                            super.onPostExecute(aBoolean);
+                            if(!aBoolean)
+                                try {
+                                    CreateOrder();
+                                } catch (Exception e) {
+                                    Toast toast = Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT );
+                                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                    toast.show();
+                                }
+                        }
+
+                        @Override
+                        protected Boolean doInBackground(Void... voids) {
+                            List<Order> orders = DbManagerFactory.getManager().GetOpenOrders();
+                            Bundle bundle = getArguments();
+                            final String user = bundle.getString(ConstValues.User);
+                            if (orders != null) {
+                                for (Order o : orders) {
+                                    if (user.equals(o.getClientNumber())) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            return  false;
+                        }
+                    }.execute();
+
                 } catch (Exception e) {
                     Toast toast = Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT );
                     toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
@@ -211,6 +243,7 @@ public class PresentBranches extends Fragment{
         ShowFilteredBranches();
         return viewFragment;
     }
+
 
     /**
      * ShowFilteredBranches, filter branch according to city
