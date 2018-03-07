@@ -54,7 +54,8 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
     private Button cancalButton;
     //operation
     private static final String TAG = "closeOrderCheck";
-
+    //interface to return the result
+    Success_order success ;
 
     //get strings from current DB to spinner
     private List<String> getLocations(List<Branch> branchList)
@@ -241,6 +242,9 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
                         {
                             msg = getString(R.string.failed_to_close_order);
                         }
+                        if( success != null ){
+                            success.finish(B);
+                        }
                         Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG );
                         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
                         toast.show();
@@ -268,10 +272,14 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
                         if(B)
                         {
                             msg = getString(R.string.Car_returned_successfully);
+                            //finish()
                         }
                         else
                         {
                             msg = getString(R.string.failed_to_close_order);
+                        }
+                        if( success != null ){
+                            success.finish(B);
                         }
                         dismiss();
                         Toast toast = Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG );
@@ -296,5 +304,12 @@ public class CloseOrderDialog extends DialogFragment implements SeekBar.OnSeekBa
              toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
              toast.show();
         }
+    }
+    public interface Success_order{
+        void finish(boolean result);
+    }
+
+    public void setSuccess(Success_order success) {
+        this.success = success;
     }
 }

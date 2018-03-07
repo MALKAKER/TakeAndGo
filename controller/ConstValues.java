@@ -22,6 +22,9 @@ public class ConstValues {
     //flag for new available cars
     public static final String IS_AVAILABLE_CARS = "com.javaproject.malki.takeandgo.IS_AVAILABLE_CARS";
 
+    //key to transfer activity info.
+    public static final String MY_CAR = "MY_CAR";
+    public static final String IS_RENT = "IS_RENT";
 
     //time format
     public static final String TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";

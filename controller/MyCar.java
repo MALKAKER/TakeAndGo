@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,10 +149,6 @@ public class MyCar extends Fragment {
                 {
                     flag = false;
                     closeOrder();
-                    if (!checkOrderOpen()){
-                        isRent.setChecked(false);
-                        myCar.setVisibility(View.GONE);
-                    }
                 }
             }
         });
@@ -169,8 +166,18 @@ public class MyCar extends Fragment {
         args.putString(ConstCars.OrderConst.BILL_AMOUNT, String.valueOf(d));
         CloseOrderDialog newFragment = new CloseOrderDialog().newInstance();
         newFragment.setArguments(args);
+        newFragment.setSuccess(new CloseOrderDialog.Success_order() {
+            @Override
+            public void finish(boolean result) {
+                if (result){
+                    if(isRent!=null && myCar!=null){
+                        isRent.setChecked(false);
+                        myCar.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
         newFragment.show(getActivity().getFragmentManager(),"dialog");
-
     }
 
     /*
